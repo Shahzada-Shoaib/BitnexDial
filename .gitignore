@@ -1,0 +1,9 @@
+node_modules/
+.next/
+logs/
+*.log
+.env
+
+components/admin-api.js
+components/send-sms-api.js
+public/ap1.js

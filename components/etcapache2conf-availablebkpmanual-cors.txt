@@ -1,0 +1,7 @@
+Access to fetch at 'https://bkpmanual.bitnexdial.com/api/login' from origin 'https://bitnexdial.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: The 'Access-Control-Allow-Origin' header contains multiple values 'http://127.0.0.1:3000, https://bitnexdial.com', but only one is allowed. Have the server send the header with a valid value.Understand this error
+bkpmanual.bitnexdial.com/api/login:1  Failed to load resource: net::ERR_FAILEDUnderstand this error
+login.html:1632 Login Error: TypeError: Failed to fetch
+    at s.fetch (requests.js:1:3725)
+    at submitLogin (login.html:1568:40)
+    at HTMLFormElement.onsubmit (login.html:1301:87)
+submitLogin @ login.html:1632Understand this error

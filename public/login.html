@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#00CBA6">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitNex Dialer | Secure Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+
+
+
+
+        .slider-panel {
+            min-height: 40vh;
+        }
+
+        .slide {
+            padding: 40px 20px;
+        }
+
+        .slide-image {
+            width: 200px;
+            height: 200px;
+        }
+
+        .slide-image::before {
+            width: 240px;
+            height: 240px;
+            top: -20px;
+            right: -20px;
+        }
+
+        .slide-title {
+            font-size: 1.8rem;
+        }
+
+        .slide-description {
+            font-size: 1rem;
+        }
+
+
+        @media (max-width: 768px) {
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 6px;
+            }
+
+            .theme-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+            }
+
+            .company-header {
+                padding: 15px 20px;
+            }
+
+            .company-name {
+                font-size: 1.3rem;
+            }
+
+            .company-subtitle {
+                font-size: 0.7rem;
+            }
+
+            .logo-image {
+                width: 35px;
+                height: 35px;
+            }
+
+
+        }
+
+
+
+
+
+
+        /* Theme variables */
+        :root {
+            --bg-primary: #f8fafb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: rgba(255, 255, 255, 0.95);
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --text-tertiary: #718096;
+            --border-color: rgba(0, 203, 166, 0.2);
+            --shadow-light: rgba(0, 203, 166, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.04);
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --panel-bg: linear-gradient(135deg, #f8fafb 0%, #e8f4f3 100%);
+            --decorative-bg: rgba(0, 203, 166, 0.08);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: rgba(30, 41, 59, 0.95);
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --border-color: rgba(0, 203, 166, 0.3);
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+            --input-bg: rgba(15, 23, 42, 0.9);
+            --panel-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --decorative-bg: rgba(0, 203, 166, 0.4);
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px var(--shadow-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px var(--shadow-light);
+        }
+
+        .theme-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .theme-icon.sun {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            transform: rotate(0deg);
+        }
+
+        .theme-icon.moon {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            transform: rotate(180deg);
+        }
+
+        [data-theme="dark"] .theme-icon.sun {
+            opacity: 0.3;
+            transform: rotate(-180deg);
+        }
+
+        [data-theme="dark"] .theme-icon.moon {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+
+        [data-theme="light"] .theme-icon.moon {
+            opacity: 0.3;
+            transform: rotate(180deg);
+        }
+
+        [data-theme="light"] .theme-icon.sun {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+
+        /* Curtain Transition Overlay */
+        .curtain-overlay {
+            position: fixed;
+            top: -100vh;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #00CBA6 0%, #51E4DC 50%, #00CBA6 100%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+        }
+
+        .curtain-overlay.active {
+            transform: translateY(100vh);
+            opacity: 1;
+        }
+
+        .curtain-content {
+            text-align: center;
+            color: white;
+            animation: curtainContentFade 0.6s ease-out 0.3s both;
+        }
+
+        .curtain-robot {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: robotMove 1s ease-in-out infinite alternate;
+        }
+
+        .curtain-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .curtain-subtext {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        @keyframes curtainContentFade {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes robotMove {
+            from {
+                transform: translateY(-10px) rotate(-5deg);
+            }
+
+            to {
+                transform: translateY(10px) rotate(5deg);
+            }
+        }
+
+        /* Loading dots animation */
+        .loading-dots {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 2px;
+            animation: loadingDots 1.4s ease-in-out infinite both;
+        }
+
+        .loading-dots span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        .loading-dots span:nth-child(3) {
+            animation-delay: 0s;
+        }
+
+        @keyframes loadingDots {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+
+            40% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        /* Company Header */
+        .company-header {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            z-index: 100;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .company-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .company-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .company-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00CBA6;
+            letter-spacing: -0.02em;
+        }
+
+        .company-subtitle {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 0.1em;
+            margin-top: 2px;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg-primary);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Enhanced Animations and Visual Effects */
+        .login-panel {
+            flex: 1;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, var(--decorative-bg) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 203, 166, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(2deg);
+            }
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 10;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .login-card {
+            background: var(--bg-tertiary);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 48px;
+            box-shadow:
+                0 20px 40px var(--shadow-light),
+                0 8px 32px var(--shadow-medium),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00CBA6 0%, #51E4DC 50%, #00CBA6 100%);
+            background-size: 200% 100%;
+            animation: shimmerTop 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmerTop {
+
+            0%,
+            100% {
+                background-position: 200% 0;
+            }
+
+            50% {
+                background-position: -200% 0;
+            }
+        }
+
+        .login-card:hover {
+            transform: translateY(-8px);
+            box-shadow:
+                0 32px 64px rgba(0, 203, 166, 0.12),
+                0 16px 48px var(--shadow-medium),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .brand-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background: #00CBA6;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 203, 166, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .logo-container svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+            position: relative;
+            z-index: 1;
+            fill: none;
+            stroke: currentColor;
+        }
+
+        .phone-icon {
+            animation: rotatePhone 4s ease-in-out infinite;
+        }
+
+        @keyframes rotatePhone {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-10deg);
+            }
+
+            75% {
+                transform: rotate(10deg);
+            }
+        }
+
+        .brand-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #00CBA6;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            background: var(--input-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00CBA6;
+            box-shadow:
+                0 0 0 4px rgba(0, 203, 166, 0.1),
+                0 8px 24px rgba(0, 203, 166, 0.08);
+            background: var(--bg-secondary);
+            transform: translateY(-2px);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00CBA6;
+            width: 20px;
+            height: 20px;
+        }
+
+        .form-input.with-icon {
+            padding-left: 50px;
+        }
+
+        .password-field {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 8px;
+            color: var(--text-tertiary);
+            transition: all 0.2s ease;
+        }
+
+        .password-toggle:hover {
+            background: rgba(0, 203, 166, 0.1);
+            color: #00CBA6;
+        }
+
+        .eye-icon {
+            width: 20px;
+            height: 20px;
+            transition: opacity 0.2s ease;
+        }
+
+        .eye-icon.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, #00CBA6 0%, #51E4DC 100%);
+            color: white;
+            border: none;
+            padding: 18px 24px;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                0 8px 24px rgba(0, 203, 166, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
+            background-size: 200% 100%;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 16px 40px rgba(0, 203, 166, 0.4),
+                0 8px 24px rgba(0, 0, 0, 0.15);
+            background-position: 100% 0;
+        }
+
+        .submit-button:active {
+            transform: translateY(-2px);
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .submit-button:hover::before {
+            left: 100%;
+        }
+
+        .support-links {
+            margin-top: 32px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .support-link {
+            color: #00CBA6;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .support-link:hover {
+            color: #00B894;
+            transform: translateY(-1px);
+        }
+
+        .support-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00CBA6;
+            transition: width 0.3s ease;
+        }
+
+        .support-link:hover::after {
+            width: 100%;
+        }
+
+        /* Right Panel - Image Slider */
+        .slider-panel {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: var(--panel-bg);
+        }
+
+        .slider-panel::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            right: 10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--decorative-bg) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .slider-panel::after {
+            content: '';
+            position: absolute;
+            bottom: 20%;
+            left: 10%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(81, 228, 220, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite reverse;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: scale(1.3) rotate(5deg);
+                opacity: 0.8;
+            }
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--panel-bg);
+            padding: 60px;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-content {
+            text-align: center;
+            max-width: 500px;
+            animation: slideInRight 0.8s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-image-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+
+        .slide-image {
+            width: 280px;
+            height: 280px;
+            border-radius: 20%;
+            overflow: hidden;
+            border: 4px solid #00CBA6;
+            box-shadow: 0 8px 32px rgba(0, 203, 166, 0.2);
+            position: relative;
+        }
+
+        .slide-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-image::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 320px;
+            height: 320px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .slide-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .slide-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .decorative-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .decorative-dots {
+            position: absolute;
+            bottom: 120px;
+            right: 80px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 60px;
+            height: 60px;
+        }
+
+        .decorative-dot {
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(45deg, var(--decorative-bg), rgba(81, 228, 220, 0.4));
+            border-radius: 50%;
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+
+        .decorative-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .decorative-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .decorative-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        .decorative-dot:nth-child(4) {
+            animation-delay: 0.6s;
+        }
+
+        .decorative-dot:nth-child(5) {
+            animation-delay: 0.8s;
+        }
+
+        .decorative-dot:nth-child(6) {
+            animation-delay: 1s;
+        }
+
+        .decorative-dot:nth-child(7) {
+            animation-delay: 1.2s;
+        }
+
+        .decorative-dot:nth-child(8) {
+            animation-delay: 1.4s;
+        }
+
+        .decorative-dot:nth-child(9) {
+            animation-delay: 1.6s;
+        }
+
+        @keyframes dotPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--decorative-bg);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .dot::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, transparent, rgba(0, 203, 166, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .dot:hover::before {
+            opacity: 1;
+        }
+
+        .dot.active {
+            background: linear-gradient(45deg, #00CBA6, #51E4DC);
+            transform: scale(1.4);
+            box-shadow: 0 4px 12px rgba(0, 203, 166, 0.4);
+        }
+
+        .dot.active::before {
+            opacity: 1;
+            background: linear-gradient(45deg, rgba(0, 203, 166, 0.3), rgba(81, 228, 220, 0.3));
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            color: #00CBA6;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            z-index: 10;
+            font-weight: bold;
+        }
+
+        .slider-nav:hover {
+            background: #00CBA6;
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+            border-color: #00CBA6;
+        }
+
+        .slider-nav.prev {
+            left: 30px;
+        }
+
+        .slider-nav.next {
+            right: 30px;
+        }
+
+        /* Loading state */
+        .submit-button.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .submit-button.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            body {
+                flex-direction: column;
+            }
+
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+            }
+
+            .company-header {
+                position: relative;
+                top: auto;
+                left: auto;
+                padding: 20px 40px;
+                background: var(--bg-tertiary);
+                backdrop-filter: blur(10px);
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .login-panel,
+            .slider-panel {
+                flex: none;
+            }
+
+            .login-panel {
+                min-height: 100vh;
+            }
+
+            .slider-panel {
+                display: none;
+            }
+
+            .support-links {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .brand-title {
+                font-size: 1.8rem;
+            }
+
+            .login-card {
+                padding: 32px 24px;
+            }
+
+            .curtain-robot {
+                font-size: 3rem;
+            }
+
+            .curtain-text {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Error states */
+        .form-input.error {
+            border-color: #e53e3e;
+            box-shadow: 0 0 0 4px rgba(229, 62, 62, 0.1);
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .form-input.success {
+            border-color: #38a169;
+            box-shadow: 0 0 0 4px rgba(56, 161, 105, 0.1);
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-4px);
+            }
+
+            75% {
+                transform: translateX(4px);
+            }
+        }
+
+        /* Theme transition animations */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+    </style>
+</head>
+
+<body data-theme="light">
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+    <script>
+        let browserFingerprint = "";
+
+        // Load fingerprint and store for login use
+        FingerprintJS.load().then(fp => {
+            fp.get().then(result => {
+                browserFingerprint = result.visitorId;
+            });
+        });
+
+        // Theme Management
+        function initializeTheme() {
+            // Check system preference first
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+            // Check for saved theme preference, if none exists, use system preference
+            const savedTheme = localStorage.getItem('theme');
+            let initialTheme;
+
+            if (savedTheme) {
+                // User has a saved preference
+                initialTheme = savedTheme === 'auto' ? systemTheme : savedTheme;
+            } else {
+                // No saved preference, use system preference and save it
+                initialTheme = systemTheme;
+                localStorage.setItem('theme', systemTheme);
+            }
+
+            document.documentElement.setAttribute('data-theme', initialTheme);
+            updateThemeToggle(initialTheme);
+            // Update meta theme-color for mobile browsers
+            updateMetaThemeColor(initialTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            // Add transition class for smooth theme change
+            document.body.style.transition = 'all 0.3s ease';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeToggle(newTheme);
+            updateMetaThemeColor(newTheme);
+            // Remove transition after animation completes
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 300);
+        }
+
+        function updateMetaThemeColor(theme) {
+            const metaThemeColor = document.querySelector("meta[name=theme-color]");
+            if (metaThemeColor) {
+                metaThemeColor.setAttribute("content", theme === 'dark' ? '#0f172a' : '#00CBA6');
+            }
+        }
+
+        function updateThemeToggle(theme) {
+            const sunIcon = document.querySelector('.theme-icon.sun');
+            const moonIcon = document.querySelector('.theme-icon.moon');
+
+            if (theme === 'dark') {
+                sunIcon.style.opacity = '0.3';
+                sunIcon.style.transform = 'rotate(-180deg)';
+                moonIcon.style.opacity = '1';
+                moonIcon.style.transform = 'rotate(0deg)';
+            } else {
+                sunIcon.style.opacity = '1';
+                sunIcon.style.transform = 'rotate(0deg)';
+                moonIcon.style.opacity = '0.3';
+                moonIcon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Listen for system theme changes and auto-update if user hasn't manually set a preference
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            const newSystemTheme = e.matches ? 'dark' : 'light';
+            const savedTheme = localStorage.getItem('theme');
+
+            // Only auto-update if user hasn't manually overridden the theme
+            // or if their saved preference matches the previous system preference
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const previousSystemTheme = currentTheme;
+
+            // If saved theme matches current theme, it means user is following system preference
+            if (!savedTheme || savedTheme === previousSystemTheme) {
+                document.documentElement.setAttribute('data-theme', newSystemTheme);
+                updateThemeToggle(newSystemTheme);
+                updateMetaThemeColor(newSystemTheme);
+                localStorage.setItem('theme', newSystemTheme);
+            } else {
+                console.log(`🔒 System theme changed to ${newSystemTheme}, but keeping user preference: ${savedTheme}`);
+            }
+        });
+
+        // Add system theme detection info to console
+        function logSystemThemeInfo() {
+            const systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const savedTheme = localStorage.getItem('theme');
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeTheme();
+            logSystemThemeInfo();
+        });
+    </script>
+
+    <!-- Dark Mode Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+        <div class="theme-icon sun">☀️</div>
+        <div class="theme-icon moon">🌙</div>
+    </div>
+
+    <!-- Curtain Transition Overlay -->
+    <div class="curtain-overlay" id="curtainOverlay">
+        <div class="curtain-content">
+            <div class="curtain-robot">🤖</div>
+            <div class="curtain-text">Loading your dashboard</div>
+            <div class="curtain-subtext">
+                Please wait while we prepare everything
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Company Logo Header -->
+    <div class="company-header">
+        <div class="company-logo">
+            <img src="/logo.png" alt="BitNex Technologies Logo" class="logo-image">
+            <div class="company-text">
+                <div class="company-name">BITNEX</div>
+                <div class="company-subtitle">TECHNOLOGIES</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Left Panel - Login Form -->
+    <div class="login-panel">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="brand-section">
+                    <div class="logo-container">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="phone-icon">
+                            <path
+                                d="M18.1182 14.702L14 15.5C11.2183 14.1038 9.5 12.5 8.5 10L9.26995 5.8699L7.81452 2L4.0636 2C2.93605 2 2.04814 2.93178 2.21654 4.04668C2.63695 6.83 3.87653 11.8765 7.5 15.5C11.3052 19.3052 16.7857 20.9564 19.802 21.6127C20.9668 21.8662 22 20.9575 22 19.7655L22 16.1812L18.1182 14.702Z"
+                                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="1.5" />
+                        </svg>
+                    </div>
+                    <h1 class="brand-title">BITNEX DIALER</h1>
+                    <p class="brand-subtitle">Welcome back to your communication hub</p>
+                </div>
+
+                <form class="login-form" onsubmit="submitLogin(event)" id="loginForm">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <div style="position: relative;">
+                            <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                            </svg>
+                            <input type="email" id="email" class="form-input with-icon" required autocomplete="username"
+                                placeholder="Enter your email address">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="password-field" style="position: relative;">
+                            <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <input type="password" id="password" class="form-input with-icon" required
+                                autocomplete="current-password" placeholder="Enter your password">
+                            <button type="button" class="password-toggle" onclick="togglePassword()"
+                                aria-label="Toggle password visibility">
+                                <svg class="eye-icon" id="eyeOpen" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                    </path>
+                                </svg>
+                                <svg class="eye-icon hidden" id="eyeClosed" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L8.464 8.464M14.12 14.12l1.415 1.415M14.12 14.12L8.464 8.464M8.464 8.464l5.657 5.657m0 0L8.464 8.464">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-button" id="submitBtn">
+                        <span>Sign In</span>
+                    </button>
+                </form>
+
+                <div class="support-links">
+                    <a href="#" class="support-link">Forgot Password?</a>
+                    <a href="#" class="support-link">Create Account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel - Image Slider -->
+    <div class="slider-panel">
+        <div class="slider-container">
+            <!-- Slide 1 -->
+            <div class="slide active">
+                <div class="slide-content">
+                    <div class="slide-image-container">
+                        <div class="slide-image">
+                            <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                alt="Professional Customer Service">
+                        </div>
+                    </div>
+                    <h2 class="slide-title">Professional Communication</h2>
+                    <p class="slide-description">Experience crystal-clear voice communication with our advanced VoIP
+                        technology. Connect with customers worldwide with enterprise-grade call quality.</p>
+                </div>
+                <div class="decorative-elements">
+                    <div class="decorative-dots">
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide">
+                <div class="slide-content">
+                    <div class="slide-image-container">
+                        <div class="slide-image">
+                            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                alt="Team Analytics">
+                        </div>
+                    </div>
+                    <h2 class="slide-title">Real-Time Analytics</h2>
+                    <p class="slide-description">Monitor your communication performance with comprehensive analytics and
+                        insights. Track call metrics, team productivity, and customer satisfaction in real-time.</p>
+                </div>
+                <div class="decorative-elements">
+                    <div class="decorative-dots">
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide">
+                <div class="slide-content">
+                    <div class="slide-image-container">
+                        <div class="slide-image">
+                            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                alt="Security Focus">
+                        </div>
+                    </div>
+                    <h2 class="slide-title">Enterprise Security</h2>
+                    <p class="slide-description">Your communications are protected with end-to-end encryption and
+                        enterprise-grade security protocols. Trust in our commitment to data privacy and security.</p>
+                </div>
+                <div class="decorative-elements">
+                    <div class="decorative-dots">
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="slide">
+                <div class="slide-content">
+                    <div class="slide-image-container">
+                        <div class="slide-image">
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                                alt="Team Integration">
+                        </div>
+                    </div>
+                    <h2 class="slide-title">Seamless Integration</h2>
+                    <p class="slide-description">Integrate effortlessly with your existing CRM, helpdesk, and business
+                        tools. Streamline your workflow with our comprehensive API and webhook support.</p>
+                </div>
+                <div class="decorative-elements">
+                    <div class="decorative-dots">
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                        <div class="decorative-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation arrows -->
+        <button class="slider-nav prev" onclick="changeSlide(-1)">‹</button>
+        <button class="slider-nav next" onclick="changeSlide(1)">›</button>
+
+        <!-- Dots indicator -->
+        <div class="slider-dots">
+            <span class="dot active" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+            <span class="dot" onclick="currentSlide(4)"></span>
+        </div>
+    </div>
+
+    <script>
+        // Slider functionality
+        let slideIndex = 1;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+
+        function showSlide(n) {
+            if (n > slides.length) { slideIndex = 1; }
+            if (n < 1) { slideIndex = slides.length; }
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+
+            slides[slideIndex - 1].classList.add('active');
+            dots[slideIndex - 1].classList.add('active');
+        }
+
+        function changeSlide(n) {
+            slideIndex += n;
+            showSlide(slideIndex);
+        }
+
+        function currentSlide(n) {
+            slideIndex = n;
+            showSlide(slideIndex);
+        }
+
+        // Auto-advance slides
+        setInterval(() => {
+            slideIndex++;
+            showSlide(slideIndex);
+        }, 5000);
+
+        // Curtain transition function
+        function showCurtainTransition(message = "Loading your dashboard", subtext = "Please wait while we prepare everything") {
+            const curtainOverlay = document.getElementById('curtainOverlay');
+            const curtainText = curtainOverlay.querySelector('.curtain-text');
+            const curtainSubtext = curtainOverlay.querySelector('.curtain-subtext');
+
+            // Update text content
+            curtainText.textContent = message;
+            curtainSubtext.innerHTML = `${subtext}<div class="loading-dots"><span></span><span></span><span></span></div>`;
+
+            // Show curtain with slide down effect
+            curtainOverlay.classList.add('active');
+
+            return curtainOverlay;
+        }
+
+        function hideCurtainTransition() {
+            const curtainOverlay = document.getElementById('curtainOverlay');
+            curtainOverlay.classList.remove('active');
+        }
+
+        // Demo function to test curtain transition
+        function testCurtainTransition() {
+            const curtain = showCurtainTransition("Processing login", "Connecting to secure servers");
+
+            // Hide after 3 seconds for demo
+            setTimeout(() => {
+                hideCurtainTransition();
+            }, 3000);
+        }
+
+        // Enhanced login function with curtain transition
+        async function submitLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const submitBtn = document.getElementById('submitBtn');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            // Reset previous states
+            emailInput.classList.remove('error', 'success');
+            passwordInput.classList.remove('error', 'success');
+
+            // Add loading state
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '<span style="opacity: 0;">Signing In...</span>';
+
+            try {
+                const response = await fetch("https://bkpmanual.bitnexdial.com/admin/login", {
+
+                    method: "POST",
+                    credentials: 'include',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email, password, fingerprint: browserFingerprint })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Show success state
+                    emailInput.classList.add('success');
+                    passwordInput.classList.add('success');
+
+                    // Store user data
+                    localStorage.setItem('domain', result.user.domain);
+                    localStorage.setItem('fullName', result.user.fullName);
+                    localStorage.setItem('sipUsername', result.user.sipUsername);
+                    localStorage.setItem('sipPassword', result.user.sipPassword);
+                    localStorage.setItem('webSocketPath', result.user.webSocketPath);
+                    localStorage.setItem('webSocketPort', result.user.webSocketPort);
+                    localStorage.setItem('secureWebSocketServer', result.user.secureWebSocketServer);
+                    localStorage.setItem('myPhoneNumber', result.user.senderPhone);
+                    localStorage.setItem("sessionStart", Date.now());
+                    localStorage.setItem('companyName', result.user.companyName || '');
+
+                    // Session management
+                    sessionStorage.setItem('loggedIn', 'true');
+                    sessionStorage.setItem('role', result.user.role);
+                    sessionStorage.setItem('senderPhone', result.user.senderPhone);
+
+                    // Success animation
+                    submitBtn.innerHTML = '<span>Success! Redirecting...</span>';
+
+                    // Show curtain transition with success message
+                    const roleMessage = result.user.role === "admin" ? "Loading Admin Dashboard" : "Loading Phone Interface";
+                    showCurtainTransition(roleMessage, "Setting up your workspace");
+
+                    // Redirect after curtain animation
+                    setTimeout(() => {
+                        window.location.href = result.user.role === "admin"
+                            ? "/admin.html"
+                            : "/phone";
+                    }, 2000);
+
+                } else {
+                    // Show error state
+                    emailInput.classList.add('error');
+                    passwordInput.classList.add('error');
+
+                    submitBtn.classList.remove('loading');
+                    submitBtn.innerHTML = '<span>Sign In</span>';
+
+                    // Show error curtain briefly
+                    showCurtainTransition("Authentication Failed", "Please check your credentials");
+                    setTimeout(() => {
+                        hideCurtainTransition();
+                        alert(result.message || "Authentication failed. Please check your credentials.");
+                    }, 1500);
+                }
+            } catch (error) {
+                console.error("Login Error:", error);
+
+                // Show error state
+                emailInput.classList.add('error');
+                passwordInput.classList.add('error');
+
+                submitBtn.classList.remove('loading');
+                submitBtn.innerHTML = '<span>Sign In</span>';
+
+                // Show error curtain briefly
+                showCurtainTransition("Connection Error", "Unable to reach servers");
+                setTimeout(() => {
+                    hideCurtainTransition();
+                    alert("Login service unavailable. Please try again later.");
+                }, 1500);
+            }
+        }
+
+        // Password visibility toggle function
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const eyeOpen = document.getElementById('eyeOpen');
+            const eyeClosed = document.getElementById('eyeClosed');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeOpen.classList.add('hidden');
+                eyeClosed.classList.remove('hidden');
+            } else {
+                passwordInput.type = 'password';
+                eyeOpen.classList.remove('hidden');
+                eyeClosed.classList.add('hidden');
+            }
+        }
+
+        // Add input focus effects
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.classList.remove('error');
+            });
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function (e) {
+            // Ctrl+T to test curtain transition
+            if (e.ctrlKey && e.key === 't') {
+                e.preventDefault();
+                testCurtainTransition();
+            }
+
+            // Ctrl+D to toggle dark mode
+            if (e.ctrlKey && e.key === 'd') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+
+        // Add click event to logo for demo
+        document.querySelector('.logo-container').addEventListener('click', function () {
+            testCurtainTransition();
+        });
+
+        // Save theme preference to user data on successful login
+        function saveThemePreference() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const isFollowingSystem = currentTheme === systemTheme;
+
+            console.log('💾 Theme preference on login:', {
+                current: currentTheme,
+                system: systemTheme,
+                followingSystem: isFollowingSystem
+            });
+
+            // You can extend this to save to user profile in database
+            // Include whether user is following system preference or has manual override
+        }
+    </script>
+</body>
+
+</html>
