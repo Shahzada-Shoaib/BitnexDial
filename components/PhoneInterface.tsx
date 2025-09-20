@@ -1538,8 +1538,8 @@ export default function PhoneInterface() {
                                 </div>
 
 
-                                 {/* Filter Tabs */}
-                                 <div className="grid grid-cols-4 gap-1">
+                                {/* Filter Tabs */}
+                                <div className="grid grid-cols-4 gap-1">
                                     {[
                                         { id: 'all', label: 'ALL', count: calls.length },
                                         { id: 'missed', label: 'MISSED', count: calls.filter(c => c.type === 'missed').length },
@@ -1565,132 +1565,132 @@ export default function PhoneInterface() {
                                     ))}
                                 </div>
 
-                                
+
                             </div>
 
-                            
+
                         )}
                     </div>
 
                     {/* Content - Show keypad when keypad tab is active, call list when calls tab is active */}
                     <div className="flex-1 overflow-y-auto">
-                    {activeTab === 'keypad' && (
-                      /* Keypad in sidebar */
-                        <div className="mt-10  p-5 bg-white/20 dark:bg-slate-700/20 rounded-2xl m-3 shadow-lg border border-white/30 dark:border-slate-600/30">
-                            <div className="mb-3">
-                                <div
-                                    className="text-center mb-4 md:mb-1 p-2.5 bg-white/50 dark:bg-slate-600/50 rounded-lg shadow-inner cursor-pointer select-all"
-                                    title="Click to copy your number"
-                                    onClick={handleCopyMyNumber}
-                                >
-                                    <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">
-                                        My Caller ID: {myPhoneNumber || "Unknown"}
-                                    </span>
-                                    {copied && (
-                                        <span className="ml-2 text-green-600 dark:text-green-400 font-semibold text-xs animate-fadeIn">
-                                            Copied!
-                                        </span>
-                                    )}
-                                </div>
-
-                                <div className="relative mb-16 md:mb-0">
-                                    <input
-                                        ref={inputRef}
-                                        type="tel"
-                                        placeholder="Enter Number"
-                                        value={dialedNumber}
-                                        onChange={(e) => {
-                                            // Only allow numbers, +, -, (, ), and spaces
-                                            const value = e.target.value.replace(/[^0-9+\-\(\)\s]/g, '');
-                                            setDialedNumber(value);
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' && dialedNumber && !isCallActive()) {
-                                                e.preventDefault();
-                                                handleCall();
-                                            }
-                                        }}
-                                        className="w-full p-2.5 pr-10 text-center text-lg font-mono border-2 border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:border-[#3778D6] dark:focus:border-blue-400 focus:ring-2 focus:ring-[#3778D6]/20 dark:focus:ring-blue-400/20 shadow-md bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-3 mb-5 justify-items-center">
-                                {[
-                                    { number: '1', letters: '' },
-                                    { number: '2', letters: 'ABC' },
-                                    { number: '3', letters: 'DEF' },
-                                    { number: '4', letters: 'GHI' },
-                                    { number: '5', letters: 'JKL' },
-                                    { number: '6', letters: 'MNO' },
-                                    { number: '7', letters: 'PQRS' },
-                                    { number: '8', letters: 'TUV' },
-                                    { number: '9', letters: 'WXYZ' },
-                                    { number: '*', letters: '' },
-                                    { number: '0', letters: '+' },
-                                    { number: '#', letters: '' },
-                                ].map((key) => (
-                                    <button
-                                        key={key.number}
-                                        onClick={() => key.number !== '0' && handleKeypadPress(key.number)}
-                                        onMouseDown={() => handleLongPressStart(key.number)}
-                                        onMouseUp={() => handleLongPressEnd(key.number)}
-                                        onMouseLeave={handleMouseLeave}
-                                        onTouchStart={() => handleLongPressStart(key.number)}
-                                        onTouchEnd={() => handleLongPressEnd(key.number)}
-                                        className={`w-11 h-11 p-6 bg-gradient-to-b from-white to-gray-50 dark:from-slate-600 dark:to-slate-700 hover:from-gray-50 hover:to-gray-100 dark:hover:from-slate-500 dark:hover:to-slate-600 rounded-2xl flex flex-col items-center justify-center text-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:scale-95 border border-gray-200 dark:border-slate-500 ${key.number === '0' ? 'relative' : ''
-                                            }`}
-                                        title={key.number === '0' ? 'Hold for +' : ''}
+                        {activeTab === 'keypad' && (
+                            /* Keypad in sidebar */
+                            <div className="mt-10  p-5 bg-white/20 dark:bg-slate-700/20 rounded-2xl m-3 shadow-lg border border-white/30 dark:border-slate-600/30">
+                                <div className="mb-3">
+                                    <div
+                                        className="text-center mb-4 md:mb-1 p-2.5 bg-white/50 dark:bg-slate-600/50 rounded-lg shadow-inner cursor-pointer select-all"
+                                        title="Click to copy your number"
+                                        onClick={handleCopyMyNumber}
                                     >
-                                        <span className="text-xl text-gray-800 dark:text-gray-100">{key.number}</span>
-                                        {key.letters && (
-                                            <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                                                {key.number === '0' ? '+' : key.letters}
+                                        <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">
+                                            My Caller ID: {myPhoneNumber || "Unknown"}
+                                        </span>
+                                        {copied && (
+                                            <span className="ml-2 text-green-600 dark:text-green-400 font-semibold text-xs animate-fadeIn">
+                                                Copied!
                                             </span>
                                         )}
-                                    </button>
-                                ))}
-                            </div>
+                                    </div>
 
-                            <div className="grid grid-cols-3 gap-3 items-center justify-items-center">
-                                                        <button
-                                                            onClick={() => {
-                                                                if (dialedNumber) {
-                                                                    handleTextMessage(dialedNumber);
-                                                                }
-                                                            }}
-                                                            disabled={!dialedNumber}
-                                                            className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 border-2
+                                    <div className="relative mb-16 md:mb-0">
+                                        <input
+                                            ref={inputRef}
+                                            type="tel"
+                                            placeholder="Enter Number"
+                                            value={dialedNumber}
+                                            onChange={(e) => {
+                                                // Only allow numbers, +, -, (, ), and spaces
+                                                const value = e.target.value.replace(/[^0-9+\-\(\)\s]/g, '');
+                                                setDialedNumber(value);
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && dialedNumber && !isCallActive()) {
+                                                    e.preventDefault();
+                                                    handleCall();
+                                                }
+                                            }}
+                                            className="w-full p-2.5 pr-10 text-center text-lg font-mono border-2 border-gray-300 dark:border-slate-600 rounded-xl focus:outline-none focus:border-[#3778D6] dark:focus:border-blue-400 focus:ring-2 focus:ring-[#3778D6]/20 dark:focus:ring-blue-400/20 shadow-md bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-3 mb-5 justify-items-center">
+                                    {[
+                                        { number: '1', letters: '' },
+                                        { number: '2', letters: 'ABC' },
+                                        { number: '3', letters: 'DEF' },
+                                        { number: '4', letters: 'GHI' },
+                                        { number: '5', letters: 'JKL' },
+                                        { number: '6', letters: 'MNO' },
+                                        { number: '7', letters: 'PQRS' },
+                                        { number: '8', letters: 'TUV' },
+                                        { number: '9', letters: 'WXYZ' },
+                                        { number: '*', letters: '' },
+                                        { number: '0', letters: '+' },
+                                        { number: '#', letters: '' },
+                                    ].map((key) => (
+                                        <button
+                                            key={key.number}
+                                            onClick={() => key.number !== '0' && handleKeypadPress(key.number)}
+                                            onMouseDown={() => handleLongPressStart(key.number)}
+                                            onMouseUp={() => handleLongPressEnd(key.number)}
+                                            onMouseLeave={handleMouseLeave}
+                                            onTouchStart={() => handleLongPressStart(key.number)}
+                                            onTouchEnd={() => handleLongPressEnd(key.number)}
+                                            className={`w-11 h-11 p-6 bg-gradient-to-b from-white to-gray-50 dark:from-slate-600 dark:to-slate-700 hover:from-gray-50 hover:to-gray-100 dark:hover:from-slate-500 dark:hover:to-slate-600 rounded-2xl flex flex-col items-center justify-center text-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:scale-95 border border-gray-200 dark:border-slate-500 ${key.number === '0' ? 'relative' : ''
+                                                }`}
+                                            title={key.number === '0' ? 'Hold for +' : ''}
+                                        >
+                                            <span className="text-xl text-gray-800 dark:text-gray-100">{key.number}</span>
+                                            {key.letters && (
+                                                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                                    {key.number === '0' ? '+' : key.letters}
+                                                </span>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-3 items-center justify-items-center">
+                                    <button
+                                        onClick={() => {
+                                            if (dialedNumber) {
+                                                handleTextMessage(dialedNumber);
+                                            }
+                                        }}
+                                        disabled={!dialedNumber}
+                                        className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 border-2
                                                                                 ${dialedNumber
-                                                                    ? 'bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 cursor-pointer border-blue-500 dark:border-blue-400'
-                                                                    : 'bg-gray-200 dark:bg-gray-600 cursor-not-allowed border-gray-300 dark:border-gray-600'
-                                                                }`}
-                                                            title={dialedNumber ? `Text ${dialedNumber}` : 'Enter a number first'}
-                                                        >
-                                                            <TbMessage2 className="text-white text-lg" />
-                                                        </button>
-                                                        <button
-                                                            onClick={handleCall}
-                                                            disabled={!dialedNumber || isCallActive() || callActive}
-                                                            className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 ${dialedNumber && !isCallActive()
-                                                                ? 'bg-gradient-to-b from-green-400 to-green-600 dark:from-green-500 dark:to-green-700 hover:from-green-500 hover:to-green-700 dark:hover:from-green-400 dark:hover:to-green-600 cursor-pointer border-green-500 dark:border-green-400'
-                                                                : 'bg-gradient-to-b from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 cursor-not-allowed border-gray-400 dark:border-gray-600'
-                                                                }`}
-                                                            title={!dialedNumber ? 'Enter a number first' : isCallActive() ? 'Call in progress' : `Call ${dialedNumber}`}
-                                                        >
-                                                            <BsTelephoneFill className="text-white text-xl" />
-                                                        </button>
-                            
-                                                        <button
-                                                            onClick={handleCall}
-                                                            className="w-12 h-12 bg-gradient-to-b from-red-400 to-red-600 dark:from-red-500 dark:to-red-700 hover:from-red-500 hover:to-red-700 dark:hover:from-red-400 dark:hover:to-red-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 border border-red-500 dark:border-red-400"
-                                                            title="Backspace"
-                                                        >
-                                                            <MdBackspace className="text-white text-lg" />
-                                                        </button>
+                                                ? 'bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 cursor-pointer border-blue-500 dark:border-blue-400'
+                                                : 'bg-gray-200 dark:bg-gray-600 cursor-not-allowed border-gray-300 dark:border-gray-600'
+                                            }`}
+                                        title={dialedNumber ? `Text ${dialedNumber}` : 'Enter a number first'}
+                                    >
+                                        <TbMessage2 className="text-white text-lg" />
+                                    </button>
+                                    <button
+                                        onClick={handleCall}
+                                        disabled={!dialedNumber || isCallActive() || callActive}
+                                        className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 border-2 ${dialedNumber && !isCallActive()
+                                            ? 'bg-gradient-to-b from-green-400 to-green-600 dark:from-green-500 dark:to-green-700 hover:from-green-500 hover:to-green-700 dark:hover:from-green-400 dark:hover:to-green-600 cursor-pointer border-green-500 dark:border-green-400'
+                                            : 'bg-gradient-to-b from-gray-300 to-gray-400 dark:from-gray-600 dark:to-gray-700 cursor-not-allowed border-gray-400 dark:border-gray-600'
+                                            }`}
+                                        title={!dialedNumber ? 'Enter a number first' : isCallActive() ? 'Call in progress' : `Call ${dialedNumber}`}
+                                    >
+                                        <BsTelephoneFill className="text-white text-xl" />
+                                    </button>
+
+                                    <button
+                                        onClick={handleBackspace}
+                                        className="w-12 h-12 bg-gradient-to-b from-red-400 to-red-600 dark:from-red-500 dark:to-red-700 hover:from-red-500 hover:to-red-700 dark:hover:from-red-400 dark:hover:to-red-600 rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 border border-red-500 dark:border-red-400"
+                                        title="Backspace"
+                                    >
+                                        <MdBackspace className="text-white text-lg" />
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
                         {activeTab === 'calls' && (
                             <>
                                 {/* Main container with proper flex layout */}
@@ -2224,128 +2224,123 @@ export default function PhoneInterface() {
                                             //     </div>
                                             // </div>
 
-<div
-  key={vm.id || index}
-  onClick={() => handleVoicemailSelect(vm)}
-  className={`relative border-2 sm:border-8 flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border ${
-    selectedVoicemail?.id === vm.id
-      ? 'bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/50 dark:to-purple-800/50 border-purple-300 dark:border-purple-600 shadow-purple-200/50 dark:shadow-purple-800/50'
-      : vm.read === "0"
-        ? 'bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/50 dark:to-blue-800/50 border-blue-300 dark:border-blue-600 shadow-blue-200/50 dark:shadow-blue-800/50'
-        : 'hover:bg-white dark:hover:bg-slate-700 bg-white/50 dark:bg-slate-700/50 border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500'
-  }`}
->
-  {vm.read === "0" && (
-    <div className="absolute top-2 right-2 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-gradient-to-br from-red-400 to-red-600 rounded-full shadow-lg animate-pulse ring-2 ring-white dark:ring-slate-800" />
-  )}
+                                            <div
+                                                key={vm.id || index}
+                                                onClick={() => handleVoicemailSelect(vm)}
+                                                className={`relative border-2 sm:border-8 flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border ${selectedVoicemail?.id === vm.id
+                                                        ? 'bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/50 dark:to-purple-800/50 border-purple-300 dark:border-purple-600 shadow-purple-200/50 dark:shadow-purple-800/50'
+                                                        : vm.read === "0"
+                                                            ? 'bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/50 dark:to-blue-800/50 border-blue-300 dark:border-blue-600 shadow-blue-200/50 dark:shadow-blue-800/50'
+                                                            : 'hover:bg-white dark:hover:bg-slate-700 bg-white/50 dark:bg-slate-700/50 border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500'
+                                                    }`}
+                                            >
+                                                {vm.read === "0" && (
+                                                    <div className="absolute top-2 right-2 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-gradient-to-br from-red-400 to-red-600 rounded-full shadow-lg animate-pulse ring-2 ring-white dark:ring-slate-800" />
+                                                )}
 
-  {/* LEFT: image/icon */}
-  <div className="shrink-0">
-    <div className={`h-10 w-10 sm:h-12 sm:w-12 grid place-items-center rounded-lg shadow-sm ${
-      vm.read === "0" ? 'bg-purple-100 dark:bg-purple-900/50' : 'bg-gray-100 dark:bg-gray-700'
-    }`}>
-      <div className={`${vm.read === "0" ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400'} text-xl sm:text-2xl`}>
-        📬
-      </div>
-    </div>
-  </div>
+                                                {/* LEFT: image/icon */}
+                                                <div className="shrink-0">
+                                                    <div className={`h-10 w-10 sm:h-12 sm:w-12 grid place-items-center rounded-lg shadow-sm ${vm.read === "0" ? 'bg-purple-100 dark:bg-purple-900/50' : 'bg-gray-100 dark:bg-gray-700'
+                                                        }`}>
+                                                        <div className={`${vm.read === "0" ? 'text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400'} text-xl sm:text-2xl`}>
+                                                            📬
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-  {/* RIGHT: number + date + actions */}
-  <div className="flex-1 min-w-0">
-    {/* Top row: number + NEW + date (date aligned to the right) */}
-    <div className="flex items-start justify-between gap-2">
-      <div className="min-w-0 flex items-center gap-2">
-        <div className="font-semibold text-sm sm:text-base text-gray-800 dark:text-gray-200 truncate">
-          {formatPhoneNumber(extractDigits(getPrimaryPhoneNumber(vm)))}
-        </div>
-        {vm.read === "0" && (
-          <span className="px-2 py-0.5 bg-gradient-to-r from-red-400 to-red-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-sm animate-pulse">
-            NEW
-          </span>
-        )}
-      </div>
+                                                {/* RIGHT: number + date + actions */}
+                                                <div className="flex-1 min-w-0">
+                                                    {/* Top row: number + NEW + date (date aligned to the right) */}
+                                                    <div className="flex items-start justify-between gap-2">
+                                                        <div className="min-w-0 flex items-center gap-2">
+                                                            <div className="font-semibold text-sm sm:text-base text-gray-800 dark:text-gray-200 truncate">
+                                                                {formatPhoneNumber(extractDigits(getPrimaryPhoneNumber(vm)))}
+                                                            </div>
+                                                            {vm.read === "0" && (
+                                                                <span className="px-2 py-0.5 bg-gradient-to-r from-red-400 to-red-500 text-white text-[10px] sm:text-xs font-bold rounded-full shadow-sm animate-pulse">
+                                                                    NEW
+                                                                </span>
+                                                            )}
+                                                        </div>
 
-      <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
-        {vm.origtime && Number(vm.origtime) > 1000000000
-          ? new Date(Number(vm.origtime) * 1000).toLocaleDateString(undefined, {
-              weekday: 'short',
-              month: 'short',
-              day: 'numeric'
-            })
-          : 'Unknown date'}
-      </div>
-    </div>
+                                                        <div className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                                                            {vm.origtime && Number(vm.origtime) > 1000000000
+                                                                ? new Date(Number(vm.origtime) * 1000).toLocaleDateString(undefined, {
+                                                                    weekday: 'short',
+                                                                    month: 'short',
+                                                                    day: 'numeric'
+                                                                })
+                                                                : 'Unknown date'}
+                                                        </div>
+                                                    </div>
 
-    {/* Bottom row: action icons */}
-    <div className="mt-2 flex flex-wrap items-center gap-2 sm:justify-end">
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          const phoneNumber = getPrimaryPhoneNumber(vm);
-          if (phoneNumber && phoneNumber !== 'Unknown') {
-            handleCallFromHistory(extractDigits(phoneNumber));
-          }
-        }}
-        disabled={isCallActive() || !getPrimaryPhoneNumber(vm) || getPrimaryPhoneNumber(vm) === 'Unknown'}
-        className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ${
-          !isCallActive() && getPrimaryPhoneNumber(vm) && getPrimaryPhoneNumber(vm) !== 'Unknown'
-            ? 'bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400'
-            : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
-        }`}
-        title={
-          isCallActive()
-            ? 'Call in progress'
-            : !getPrimaryPhoneNumber(vm) || getPrimaryPhoneNumber(vm) === 'Unknown'
-              ? 'No number available'
-              : `Call ${formatPhoneNumber(getPrimaryPhoneNumber(vm))}`
-        }
-      >
-        <BsTelephone size={12} />
-      </button>
+                                                    {/* Bottom row: action icons */}
+                                                    <div className="mt-2 flex flex-wrap items-center gap-2 sm:justify-end">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                const phoneNumber = getPrimaryPhoneNumber(vm);
+                                                                if (phoneNumber && phoneNumber !== 'Unknown') {
+                                                                    handleCallFromHistory(extractDigits(phoneNumber));
+                                                                }
+                                                            }}
+                                                            disabled={isCallActive() || !getPrimaryPhoneNumber(vm) || getPrimaryPhoneNumber(vm) === 'Unknown'}
+                                                            className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ${!isCallActive() && getPrimaryPhoneNumber(vm) && getPrimaryPhoneNumber(vm) !== 'Unknown'
+                                                                    ? 'bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400'
+                                                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
+                                                                }`}
+                                                            title={
+                                                                isCallActive()
+                                                                    ? 'Call in progress'
+                                                                    : !getPrimaryPhoneNumber(vm) || getPrimaryPhoneNumber(vm) === 'Unknown'
+                                                                        ? 'No number available'
+                                                                        : `Call ${formatPhoneNumber(getPrimaryPhoneNumber(vm))}`
+                                                            }
+                                                        >
+                                                            <BsTelephone size={12} />
+                                                        </button>
 
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          const phoneNumber = getPrimaryPhoneNumber(vm);
-          if (phoneNumber && phoneNumber !== 'Unknown') {
-            handleTextMessage(extractDigits(phoneNumber));
-          }
-        }}
-        disabled={!getPrimaryPhoneNumber(vm) || getPrimaryPhoneNumber(vm) === 'Unknown'}
-        className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ${
-          getPrimaryPhoneNumber(vm) && getPrimaryPhoneNumber(vm) !== 'Unknown'
-            ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-            : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
-        }`}
-        title={
-          !getPrimaryPhoneNumber(vm) || getPrimaryPhoneNumber(vm) === 'Unknown'
-            ? 'No number available'
-            : `Text ${formatPhoneNumber(getPrimaryPhoneNumber(vm))}`
-        }
-      >
-        <BsChatText size={12} />
-      </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                const phoneNumber = getPrimaryPhoneNumber(vm);
+                                                                if (phoneNumber && phoneNumber !== 'Unknown') {
+                                                                    handleTextMessage(extractDigits(phoneNumber));
+                                                                }
+                                                            }}
+                                                            disabled={!getPrimaryPhoneNumber(vm) || getPrimaryPhoneNumber(vm) === 'Unknown'}
+                                                            className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ${getPrimaryPhoneNumber(vm) && getPrimaryPhoneNumber(vm) !== 'Unknown'
+                                                                    ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                                                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
+                                                                }`}
+                                                            title={
+                                                                !getPrimaryPhoneNumber(vm) || getPrimaryPhoneNumber(vm) === 'Unknown'
+                                                                    ? 'No number available'
+                                                                    : `Text ${formatPhoneNumber(getPrimaryPhoneNumber(vm))}`
+                                                            }
+                                                        >
+                                                            <BsChatText size={12} />
+                                                        </button>
 
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          handlePlayVoicemail(vm);
-        }}
-        disabled={!vm.audio_url}
-        className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ${
-          vm.audio_url
-            ? currentPlayingVoicemail === vm.id && isPlaying
-              ? 'bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400'
-              : 'bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400'
-            : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
-        }`}
-        title={!vm.audio_url ? 'No audio available' : currentPlayingVoicemail === vm.id && isPlaying ? 'Pause' : 'Play'}
-      >
-        {currentPlayingVoicemail === vm.id && isPlaying ? <FiPause size={12} /> : <FiPlay size={12} />}
-      </button>
-    </div>
-  </div>
-</div>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handlePlayVoicemail(vm);
+                                                            }}
+                                                            disabled={!vm.audio_url}
+                                                            className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ${vm.audio_url
+                                                                    ? currentPlayingVoicemail === vm.id && isPlaying
+                                                                        ? 'bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400'
+                                                                        : 'bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400'
+                                                                    : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
+                                                                }`}
+                                                            title={!vm.audio_url ? 'No audio available' : currentPlayingVoicemail === vm.id && isPlaying ? 'Pause' : 'Play'}
+                                                        >
+                                                            {currentPlayingVoicemail === vm.id && isPlaying ? <FiPause size={12} /> : <FiPlay size={12} />}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
 
 
 
@@ -2896,8 +2891,8 @@ export default function PhoneInterface() {
                                         <input
                                             type="text"
                                             className={`w-full p-3 sm:p-4 pl-10 sm:pl-12 bg-white dark:bg-slate-700 border-2 rounded-lg sm:rounded-xl text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none transition-all duration-300 shadow-sm hover:shadow-md focus:shadow-lg group-hover:border-gray-300 dark:group-hover:border-slate-500 ${newContact.name.trim() && isContactNameExists(newContact.name)
-                                                    ? 'border-red-500 dark:border-red-400 focus:border-red-500 dark:focus:border-red-400 focus:ring-2 focus:ring-red-500/20 dark:focus:ring-red-400/20'
-                                                    : 'border-gray-200 dark:border-slate-600 focus:border-[#3778D6] dark:focus:border-blue-400 focus:ring-2 focus:ring-[#3778D6]/20 dark:focus:ring-blue-400/20'
+                                                ? 'border-red-500 dark:border-red-400 focus:border-red-500 dark:focus:border-red-400 focus:ring-2 focus:ring-red-500/20 dark:focus:ring-red-400/20'
+                                                : 'border-gray-200 dark:border-slate-600 focus:border-[#3778D6] dark:focus:border-blue-400 focus:ring-2 focus:ring-[#3778D6]/20 dark:focus:ring-blue-400/20'
                                                 }`}
                                             placeholder="Enter contact name"
                                             value={newContact.name}
